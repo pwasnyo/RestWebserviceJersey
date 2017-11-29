@@ -1,0 +1,173 @@
+			Jersey 2 et Swagger 
+Exemple de projet:  RestWebserviceJersey
+
+1- Téléchager swagger-ui et copier le contenue du fichier dist dans le webapp de mon projet
+
+2- dans le pom mettre
+
+ <!--     swagger jersey -->
+          <dependencies>
+		<!--jersey-->
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>1.19</version>
+        </dependency>
+        <!--pour récupérer le json produit dans les services-->
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>1.19</version>
+        </dependency>
+		
+        <!-- other dependency -->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-jaxrs</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>${jax-rs-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json4s</groupId>
+            <artifactId>json4s-jackson_2.9.1-1</artifactId>
+            <version>${json4s-jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json4s</groupId>
+            <artifactId>json4s-core_2.9.2</artifactId>
+            <version>${json4s-core-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${fasterxml-json-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${fasterxml-json-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${fasterxml-json-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.paranamer</groupId>
+            <artifactId>paranamer</artifactId>
+            <version>${paranamer-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala-lang-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>${reflections-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>${servlet-api-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>${javassist-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scannotation</groupId>
+            <artifactId>scannotation</artifactId>
+            <version>${scannotation-version}</version>
+        </dependency>
+        <!-- swagger -->
+        <dependency>
+            <groupId>com.wordnik</groupId>
+            <artifactId>swagger-jersey-jaxrs_2.9.1</artifactId>
+            <version>${swagger-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wordnik</groupId>
+            <artifactId>swagger-annotations_2.9.1</artifactId>
+            <version>${swagger-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wordnik</groupId>
+            <artifactId>swagger-core_2.9.1</artifactId>
+            <version>${swagger-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wordnik</groupId>
+            <artifactId>swagger-jaxrs_2.9.1</artifactId>
+            <version>${swagger-version}</version>
+        </dependency>
+    </dependencies>
+
+3- Dans le web.xml rajouter dans les param-value les paramètres: com.wordnik.swagger.jaxrs.json ou com.wordnik.swagger.jersey.listing et adapter la config swager à notre choix
+ (lire commentaire ci dessous)
+
+ <!-- Jersey Servlet configurations -->
+    <servlet>
+        <servlet-name>Jersey REST Service</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <!--com.wordnik.swagger.jersey.listing permet de dire que dans l'index.html de swagger
+            on récupèrera les data en mettant dans l'url api-docs -->
+            <!--com.wordnik.swagger.jaxrs.json, permet de dire que dans l'index.html de swagger
+            on récupèrera les data en mettant dans l'url swagger.json -->
+            <param-value> com.wordnik.swagger.jersey.listing, com.ymagis.restwebservicejersey.service</param-value>
+        </init-param>
+    
+        <init-param>
+            <param-name>jersey.config.server.provider.classnames</param-name>
+            <param-value>
+                com.wordnik.swagger.jersey.listing.ApiListingResourceJSON,
+                com.wordnik.swagger.jersey.listing.JerseyApiDeclarationProvider,
+                com.wordnik.swagger.jersey.listing.JerseyResourceListingProvider
+            </param-value>
+        </init-param>
+        
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+
+
+4- ajouter dans le web.xml la nouvelle servlet
+
+<servlet>
+        <servlet-name>Jersey2Config</servlet-name>
+        <servlet-class>io.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
+        <init-param>
+            <param-name>api.version</param-name>
+            <param-value>1.0.0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>swagger.api.basepath</param-name>
+            <param-value>http://localhost:8080/rest</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+
+5- rajouter les annotations swagger (@Api,@ApiOperation and @ApiParam ) pour décrire dans swagger la classe qui a les services ou les ressources. cf mon projet 
+
+6- remplacer dans index.html de swagger l'url api-docs ou swagger.json en fonction du choix fait dans le web.xml (cf 3)
+ donc si mon site est configuré dans le web.xml pour tourner sur le serveur (point d'entrée) http://localhost:8080/person-rest/rest
+ alors dans url j'aurai 
+ url = "/person-rest/rest/api-docs";
+ou 
+url = "/person-rest/rest/swagger.json";
+
+7 après avoir buider déployer sur tomcat et charger pour avoir l'interface swagger
+
+Liens utiles:
+http://riteshkrmodi.blogspot.fr/2014/06/swagger-integration-jersey.html
+https://github.com/swagger-api/swagger-core/wiki/Swagger-Core-Jersey-2.X-Project-Setup
+
