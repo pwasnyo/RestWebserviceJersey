@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -45,7 +46,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    @GET
+    @DELETE
     @Path("/{id}/delete")
     @ApiOperation(value="delete person with id paramater in Map")
     public MyResponse deletePerson(@ApiParam(value="id",required=true)@PathParam("id") int id) {
