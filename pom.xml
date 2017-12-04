@@ -5,6 +5,7 @@
     <groupId>com.ymagis</groupId>
     <artifactId>RestWebserviceJersey</artifactId>
     <version>1.0</version>
+    <!-- sous linux les war sont dans /var/lib/tomcat7/webapps/-->
     <packaging>war</packaging>
 
     <name>RestWebserviceJersey</name>
